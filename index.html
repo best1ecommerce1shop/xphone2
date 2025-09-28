@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>xPhone Store</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="header__logo" aria-label="xPhone logo">
+      <svg class="header__logo-icon" width="28" height="28" viewBox="0 0 24 24" aria-hidden="true">
+        <rect x="6" y="2" width="12" height="20" rx="3" ry="3" fill="none" stroke="currentColor" stroke-width="2"></rect>
+        <circle cx="12" cy="18" r="1.5" fill="currentColor"></circle>
+      </svg>
+      <span class="header__logo-text">xPhone</span>
+    </div>
+    <button class="header__burger" aria-label="Open menu">
+      <svg width="28" height="28" viewBox="0 0 24 24" aria-hidden="true">
+        <line x1="4" y1="6" x2="20" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+        <line x1="4" y1="12" x2="16" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+        <line x1="4" y1="18" x2="20" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+      </svg>
+    </button>
+  </header>
+  <nav class="tabs" aria-label="Product categories">
+    <button class="tabs__button tabs__button--active" data-category="phones" aria-selected="true">Phones</button>
+    <button class="tabs__button" data-category="clothes" aria-selected="false">Clothes</button>
+    <button class="tabs__button" data-category="perfumes" aria-selected="false">Perfumes</button>
+  </nav>
+  <main class="catalog" aria-live="polite">
+    <section class="catalog__grid" aria-label="Product list" role="list"></section>
+  </main>
+  <div class="bottom-bar" aria-hidden="true">
+    <button class="bottom-bar__button" type="button">View Cart</button>
+  </div>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="checkout-title" aria-hidden="true">
+    <div class="modal__backdrop"></div>
+    <div class="modal__content">
+      <button class="modal__close" type="button" aria-label="Close checkout">
+        <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+          <line x1="5" y1="5" x2="19" y2="19" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+          <line x1="19" y1="5" x2="5" y2="19" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+        </svg>
+      </button>
+      <div class="modal__product">
+        <img class="modal__product-image" src="" alt="" />
+        <h2 class="modal__product-name" id="checkout-title"></h2>
+      </div>
+      <form class="modal__form" novalidate>
+        <label class="modal__field">
+          <span class="modal__label">First Name</span>
+          <input class="modal__input" type="text" name="firstName" inputmode="none" autocomplete="off" readonly />
+        </label>
+        <label class="modal__field">
+          <span class="modal__label">Last Name</span>
+          <input class="modal__input" type="text" name="lastName" inputmode="none" autocomplete="off" readonly />
+        </label>
+        <label class="modal__field">
+          <span class="modal__label">Address</span>
+          <input class="modal__input" type="text" name="address" inputmode="none" autocomplete="off" readonly />
+        </label>
+        <label class="modal__field">
+          <span class="modal__label">E-Mail</span>
+          <input class="modal__input" type="email" name="email" inputmode="none" autocomplete="off" readonly />
+        </label>
+        <button class="modal__submit" type="button" disabled>
+          <span class="modal__submit-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24">
+              <polyline points="5 13 9 17 19 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline>
+            </svg>
+          </span>
+          Confirm Order
+        </button>
+      </form>
+      <div class="modal__confirmation" aria-hidden="true">
+        <svg width="96" height="96" viewBox="0 0 96 96" aria-hidden="true">
+          <circle cx="48" cy="48" r="44" fill="none" stroke="currentColor" stroke-width="6" opacity="0.15"></circle>
+          <polyline points="28 50 42 64 68 36" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></polyline>
+        </svg>
+        <p class="modal__confirmation-text">Order Confirmed</p>
+      </div>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
