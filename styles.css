@@ -20,6 +20,17 @@ body {
   display: flex;
   flex-direction: column;
 }
+@supports (height: 100dvh) {
+  body {
+    min-height: 100dvh;
+  }
+}
+.body--locked {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  width: 100%;
+}
 img {
   max-width: 100%;
   display: block;
@@ -209,6 +220,9 @@ button:disabled {
   opacity: 0;
   transition: opacity var(--transition-base);
   z-index: 10;
+  padding: 1.5rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 .modal--active {
   pointer-events: auto;
@@ -343,5 +357,17 @@ button:disabled {
   }
   .product-card {
     padding: 0.75rem;
+  }
+  .modal {
+    align-items: flex-start;
+    padding: 1.5rem 1rem 2rem;
+  }
+  .modal__content {
+    width: 100%;
+    transform: none;
+    transition: none;
+  }
+  .modal--active .modal__content {
+    transform: none;
   }
 }

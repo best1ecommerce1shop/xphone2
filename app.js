@@ -1,3 +1,20 @@
+function createProductImageUrl(category, name) {
+  const query = encodeURIComponent(`${category} ${name}`);
+  return `https://source.unsplash.com/400x400/?${query}`;
+}
+// Add entries here (e.g. { 'phone-1': 'https://…' }) to override preview images
+const productImageOverrides = {
+    'phone-1': "https://i.ibb.co/dJxtyr6Q/1.png",
+    'phone-2': "https://i.ibb.co/dJxtyr6Q/1.png",
+    'phone-3': "https://i.ibb.co/dJxtyr6Q/1.png",
+    'phone-4': "https://i.ibb.co/dJxtyr6Q/1.png",
+    'phone-5': "https://i.ibb.co/dJxtyr6Q/1.png",
+    'phone-6': "https://i.ibb.co/dJxtyr6Q/1.png",
+    'phone-7': "https://i.ibb.co/dJxtyr6Q/1.png",
+    'phone-8': "https://i.ibb.co/dJxtyr6Q/1.png",
+    'phone-9': "https://i.ibb.co/dJxtyr6Q/1.png",
+    'phone-10': "https://i.ibb.co/dJxtyr6Q/1.png"
+};
 const products = {
   phones: [
     { id: 'phone-1', name: 'xPhone Aurora X', alt: 'Aurora X smartphone front view' },
@@ -40,7 +57,8 @@ const state = {
   selectedCategory: 'phones',
   selectedProductId: null,
   cartProductId: null,
-  checkoutTimer: null
+  checkoutTimer: null,
+  scrollPosition: 0
 };
 const gridElement = document.querySelector('.catalog__grid');
 const tabButtons = document.querySelectorAll('.tabs__button');
@@ -69,6 +87,46 @@ function createPlaceholderImage(text) {
     `</svg>`;
   return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
 }
+function inferCategoryFromId(productId) {
+  if (productId.startsWith('phone')) {
+    return 'phone';
+  }
+  if (productId.startsWith('clothes')) {
+    return 'clothes';
+  }
+  if (productId.startsWith('perfume')) {
+    return 'perfume';
+  }
+  return 'product';
+}
+function getProductImageSource(product, category) {
+  if (!product) {
+    return createPlaceholderImage('');
+  }
+  const override = productImageOverrides[product.id];
+  if (override) {
+    return override;
+  }
+  if (product.image) {
+    return product.image;
+  }
+  const resolvedCategory = category || inferCategoryFromId(product.id);
+  return createProductImageUrl(resolvedCategory, product.name);
+}
+function setProductImage(element, product, options = {}) {
+  const { lazy = false, category } = options;
+  const fallback = createPlaceholderImage(product.name);
+  element.src = getProductImageSource(product, category);
+  element.alt = product.alt;
+  if (lazy) {
+    element.loading = 'lazy';
+    element.decoding = 'async';
+  }
+  element.onerror = () => {
+    element.src = fallback;
+    element.onerror = null;
+  };
+}
 function renderProducts() {
   gridElement.innerHTML = '';
   const categoryProducts = products[state.selectedCategory];
@@ -85,8 +143,7 @@ function renderProducts() {
     imageWrapper.className = 'product-card__image-wrapper';
     const image = document.createElement('img');
     image.className = 'product-card__image';
-    image.src = createPlaceholderImage(product.name);
-    image.alt = product.alt;
+    setProductImage(image, product, { lazy: true, category: state.selectedCategory });
     imageWrapper.appendChild(image);
     const name = document.createElement('p');
     name.className = 'product-card__name';
@@ -158,8 +215,7 @@ function openModal() {
   if (!product) {
     return;
   }
-  modalProductImage.src = createPlaceholderImage(product.name);
-  modalProductImage.alt = product.alt;
+  setProductImage(modalProductImage, product, { category: state.selectedCategory });
   modalProductName.textContent = product.name;
   modalForm.classList.remove('modal__form--hidden');
   modalConfirmation.classList.remove('modal__confirmation--visible');
@@ -170,6 +226,9 @@ function openModal() {
   });
   modal.classList.add('modal--active');
   modal.setAttribute('aria-hidden', 'false');
+  state.scrollPosition = window.scrollY || document.documentElement.scrollTop || 0;
+  document.body.style.top = `-${state.scrollPosition}px`;
+  document.body.classList.add('body--locked');
   modalClose.focus();
 }
 function closeModal() {
@@ -182,6 +241,13 @@ function closeModal() {
   modalInputs.forEach((input) => {
     input.value = '';
   });
+  document.body.classList.remove('body--locked');
+  const scrollY = state.scrollPosition;
+  document.body.style.top = '';
+  if (scrollY) {
+    window.scrollTo(0, scrollY);
+  }
+  state.scrollPosition = 0;
   if (state.checkoutTimer) {
     clearTimeout(state.checkoutTimer);
     state.checkoutTimer = null;
